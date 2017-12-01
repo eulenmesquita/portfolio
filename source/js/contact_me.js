@@ -1,4 +1,6 @@
 $(function() {
+  //disabling button, will be enabled on reCaptcha event
+  $("#sendMessageButton").prop("disabled", true);
 
   $("#contactForm input,#contactForm textarea").jqBootstrapValidation({
     preventSubmit: true,
@@ -12,6 +14,7 @@ $(function() {
       var email = $("input#email").val();
       var phone = $("input#phone").val();
       var message = $("textarea#message").val();
+
       var firstName = name; // For Success/Failure Message
       // Check for white space in name for Success/Fail message
       if (firstName.indexOf(' ') >= 0) {
@@ -20,14 +23,14 @@ $(function() {
       $this = $("#sendMessageButton");
       $this.prop("disabled", true); // Disable submit button until AJAX call is complete to prevent duplicate messages
       $.ajax({
-        url: "././mail/contact_me.php",
+        url: "/mail/contact.php",
         type: "POST",
-        data: {
-          name: name,
-          phone: phone,
-          email: email,
-          message: message
-        },
+        data: JSON.stringify({
+          'name': name,
+          'phone': phone,
+          'email': email,
+          'message': message
+        }),
         cache: false,
         success: function() {
           // Success message
@@ -41,12 +44,13 @@ $(function() {
           //clear all fields
           $('#contactForm').trigger("reset");
         },
-        error: function() {
+        error: function(response) {
+          var result = response.responseJSON;
           // Fail message
           $('#success').html("<div class='alert alert-danger'>");
           $('#success > .alert-danger').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
             .append("</button>");
-          $('#success > .alert-danger').append($("<strong>").text("Sorry " + firstName + ", it seems that my mail server is not responding. Please try again later!"));
+          $('#success > .alert-danger').append($("<strong>").text("Sorry " + firstName + ", something went wrong. " + result.message + ". Please try again later!"));
           $('#success > .alert-danger').append('</div>');
           //clear all fields
           $('#contactForm').trigger("reset");
@@ -73,3 +77,24 @@ $(function() {
 $('#name').focus(function() {
   $('#success').html('');
 });
+
+function verifyRecaptcha(token) {
+  $.ajax({
+    url:'/mail/recaptcha.php',
+    type: 'post',
+    data: JSON.stringify({
+      'response': token
+    }),
+    success: function(res){
+      $("#sendMessageButton").prop("disabled", !res.success);
+    },
+    error: function(err) {
+      $('#captcha-error').show();
+    }
+  });
+  
+}
+
+function checkButton() {
+  $("#sendMessageButton").prop("disabled", true);
+}
