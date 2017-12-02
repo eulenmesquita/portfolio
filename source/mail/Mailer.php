@@ -29,20 +29,26 @@ class Mailer {
             $this->mail->isSMTP();                                      
             $this->mail->Host = $this->env->HOST;
             $this->mail->SMTPAuth = true;
-            $this->mail->Username = $this->env->USER;
+            $this->mail->Username = $this->env->USER_EMAIL;
             $this->mail->Password = $this->env->PASSWORD;
             $this->mail->SMTPSecure = 'tls';
             $this->mail->Port = $this->env->PORT;
 
             //Recipient
-            $this->mail->setFrom($this->env->USER, $this->message->name);
-            $this->mail->addAddress($this->env->USER, 'Contact Form');
+            $this->mail->setFrom($this->env->USER_EMAIL, $this->message->name);
+            $this->mail->addAddress($this->env->USER_EMAIL, 'Contact Form');
             $this->mail->AddReplyTo($this->message->email); 
             
             //Content
             $this->mail->isHTML(false);
             $this->mail->Subject = 'Website Contact Form';
-            $this->mail->Body    = $this->message->content;
+            $this->mail->Body    = 
+                'Name: '. $this->message->name . '\r\n' .
+                'Date: '. date('d/m/Y') . '\r\n' .
+                'Phone: ' . $this->message->phone . '\r\n' .
+                'e-mail: ' . $this->message->email . '\r\n' .
+                'message: ' . $this->message->content;
+            
             $this->mail->send();
             
             $result = array(

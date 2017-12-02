@@ -72,7 +72,7 @@ gulp.task('copy', function() {
 
 //clean
 gulp.task('clean', function() {
-  return gulp.src(['dist/{img,vendor,mail,downloads}','index.html','dist/[.]?env'], {read: false})
+  return gulp.src(['dist/{img,js,vendor,mail,downloads}','index.html','dist/[.]?env'], {read: false})
       .pipe(clean());
 });
 
