@@ -43,10 +43,10 @@ class Mailer {
             $this->mail->isHTML(false);
             $this->mail->Subject = 'Website Contact Form';
             $this->mail->Body    = 
-                'Name: '. $this->message->name . '\r\n' .
-                'Date: '. date('d/m/Y') . '\r\n' .
-                'Phone: ' . $this->message->phone . '\r\n' .
-                'e-mail: ' . $this->message->email . '\r\n' .
+                'Name: '. $this->message->name . PHP_EOL .
+                'Date: '. date('d/m/Y') . PHP_EOL .
+                'Phone: ' . $this->message->phone . PHP_EOL .
+                'e-mail: ' . $this->message->email . PHP_EOL .
                 'message: ' . $this->message->content;
             
             $this->mail->send();
