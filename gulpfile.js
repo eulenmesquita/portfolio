@@ -1,4 +1,6 @@
 var gulp = require('gulp');
+var $ = require('gulp-load-plugins')({rename: {'gulp-rev-delete-original':'revdel', 'gulp-if': 'if'}});
+
 var sass = require('gulp-sass');
 var browserSync = require('browser-sync').create();
 var clean = require('gulp-clean');
@@ -7,7 +9,10 @@ var rename = require("gulp-rename");
 var uglify = require('gulp-uglify');
 var filter = require('gulp-filter');
 var gutil = require('gulp-util');
+var useref = require('gulp-useref');
 var pkg = require('./package.json');
+
+
 
 // Compiles SCSS files from /scss into /css
 gulp.task('sass', function() {
@@ -35,6 +40,18 @@ gulp.task('minify-js', function() {
     .on('error', function (err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
     .pipe(gulp.dest('dist/js'))
 });
+
+
+/* Concatenning js */
+gulp.task('useref', function () {
+  return gulp.src('source/index.html')
+      .pipe($.useref())
+      .pipe($.if('*.html', $.inlineSource()))
+      .pipe($.if('*.html', $.htmlmin({collapseWhitespace: true})))
+      .pipe($.if('*.js', $.uglify()))
+      .pipe(gulp.dest('dist'));
+});
+
 
 // Copy vendor files from /node_modules into /vendor
 // NOTE: requires `npm install` before running!

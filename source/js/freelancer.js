@@ -72,4 +72,12 @@
     });
   });
 
+  $(document).on('click', '.filter-btn', function(e) {
+    var category = '.'+$(this).data('category');
+    $(this).toggleClass('disabled');
+    $(category).find('span').toggleClass('text-faded');
+    $(category).find('.progress-bar').toggle();
+
+  });
+
 })(jQuery); // End of use strict
