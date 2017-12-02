@@ -10,10 +10,7 @@
     "responsive",
     "theme",
     "template"
-  ]
-  },
-  "license": "MIT"
-  },
+  ],
   "dependencies": {
     "bootstrap": "^4.0.0-beta.2",
     "font-awesome": "4.7.0",
